@@ -1,0 +1,84 @@
+{
+  "format": "archivetune.module",
+  "formatVersion": 1,
+  "apiVersion": 1,
+  "entry": "provider.js",
+  "module": {
+    "id": "moe.rukamori.provider.tidal",
+    "name": "TIDAL",
+    "displayName": "TIDAL",
+    "version": "1.0.0",
+    "author": "Rukamori",
+    "description": "Plays songs from TIDAL with your own TIDAL subscription. Supports FLAC lossless, Hi-Res FLAC through DASH, and AAC. Provide an access token, or a refresh token with its client ID so the module can renew access automatically. Protected (DRM) and encrypted streams are not played, and previews are never returned as full tracks.",
+    "homepage": "https://github.com/rukamori/ArchiveTune",
+    "repository": "https://github.com/rukamori/ArchiveTune",
+    "license": "GPL-3.0",
+    "type": ["audio_provider"],
+    "requiredRuntimeFeatures": ["fetch@1", "settings@1", "streamResolution@1", "qualityOptions@1"],
+    "labels": ["FLAC", "Hi-Res", "Lossless", "Subscription"],
+    "capabilities": ["searchTracks", "getTrackStreamUrl"],
+    "settings": {
+      "accessToken": {
+        "type": "password",
+        "label": "Access token",
+        "description": "OAuth access token for your TIDAL account. Optional when a refresh token and client ID are set.",
+        "defaultValue": null,
+        "secret": true
+      },
+      "refreshToken": {
+        "type": "password",
+        "label": "Refresh token",
+        "description": "OAuth refresh token for your TIDAL account. Used with the client ID to renew expired access tokens.",
+        "defaultValue": null,
+        "secret": true
+      },
+      "clientId": {
+        "type": "text",
+        "label": "Client ID",
+        "description": "Client ID of the application that issued your tokens. Required for automatic renewal.",
+        "defaultValue": null
+      },
+      "clientSecret": {
+        "type": "password",
+        "label": "Client secret",
+        "description": "Only needed when the client that issued your tokens requires a secret for renewal.",
+        "defaultValue": null,
+        "secret": true
+      },
+      "countryCode": {
+        "type": "text",
+        "label": "Country code",
+        "description": "Two-letter catalog region, such as US. Leave empty to use your account's region.",
+        "defaultValue": null
+      }
+    },
+    "qualityLabel": "Audio quality",
+    "defaultQuality": "LOSSLESS",
+    "qualityOptions": [
+      {
+        "id": "HI_RES_LOSSLESS",
+        "label": "Max · Hi-Res FLAC",
+        "description": "Up to 24-bit/192 kHz FLAC delivered through DASH. TIDAL returns lossless when a track or client has no Hi-Res version.",
+        "kind": "lossless"
+      },
+      {
+        "id": "LOSSLESS",
+        "label": "High · FLAC 16-bit/44.1 kHz",
+        "description": "CD-quality FLAC as a single file.",
+        "kind": "lossless"
+      },
+      {
+        "id": "HIGH",
+        "label": "Low · AAC 320 kbps",
+        "description": "AAC at 320 kbps.",
+        "kind": "lossy"
+      },
+      {
+        "id": "LOW",
+        "label": "Data saver · AAC 96 kbps",
+        "description": "AAC at 96 kbps to reduce data usage.",
+        "kind": "lossy"
+      }
+    ]
+  }
+}
