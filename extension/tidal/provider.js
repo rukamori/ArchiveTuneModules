@@ -1,5 +1,4 @@
 const API = 'https://api.tidal.com/v1';
-const TOKEN_URL = 'https://auth.tidal.com/v1/oauth2/token';
 const QUALITIES = ['HI_RES_LOSSLESS', 'LOSSLESS', 'HIGH', 'LOW'];
 const LOSSY_BITRATES = {HIGH: 320000, LOW: 96000};
 let session = null;
@@ -18,13 +17,10 @@ function setting(context, key) {
 function credentials(context) {
   const config = {
     accessToken: setting(context, 'accessToken').replace(/^Bearer\s+/i, ''),
-    refreshToken: setting(context, 'refreshToken'),
-    clientId: setting(context, 'clientId'),
-    clientSecret: setting(context, 'clientSecret'),
     countryCode: setting(context, 'countryCode').toUpperCase(),
   };
   if (config.countryCode && !/^[A-Z]{2}$/.test(config.countryCode)) throw configurationError('TIDAL country code must be two letters');
-  if (!config.accessToken && !(config.refreshToken && config.clientId)) throw configurationError('TIDAL credentials are not configured');
+  if (!config.accessToken) throw configurationError('TIDAL access token is not configured');
   return config;
 }
 
@@ -42,80 +38,36 @@ function tokenExpiry(token) {
   }
 }
 
-async function refresh(config) {
-  const headers = {'Content-Type': 'application/x-www-form-urlencoded', Accept: 'application/json'};
-  if (config.clientSecret) headers.Authorization = 'Basic ' + btoa(config.clientId + ':' + config.clientSecret);
-  const body = new URLSearchParams({
-    client_id: config.clientId,
-    refresh_token: config.refreshToken,
-    grant_type: 'refresh_token',
-    scope: 'r_usr w_usr w_sub',
-  }).toString();
-  const response = await fetch(TOKEN_URL, {method: 'POST', headers, body});
-  if (response.status === 400 || response.status === 401) throw configurationError('TIDAL rejected the refresh token');
-  if (!response.ok) throw new Error('TIDAL token refresh failed with HTTP ' + response.status);
-  const value = await response.json();
-  if (typeof value?.access_token !== 'string' || !value.access_token) throw new Error('TIDAL token refresh returned no access token');
-  const lifetime = Number(value.expires_in);
-  return {
-    accessToken: value.access_token,
-    expiresAtMs: Date.now() + (Number.isFinite(lifetime) && lifetime > 0 ? lifetime : 3600) * 1000,
-    countryCode: typeof value.user?.countryCode === 'string' ? value.user.countryCode.toUpperCase() : '',
-    refreshed: true,
-  };
-}
-
 async function accountCountry(accessToken) {
   const response = await fetch(API + '/sessions', {headers: {Authorization: 'Bearer ' + accessToken, Accept: 'application/json'}});
-  if (response.status === 401) return null;
+  if (response.status === 401) throw configurationError('TIDAL rejected the access token');
   if (!response.ok) throw new Error('TIDAL session lookup failed with HTTP ' + response.status);
   const country = (await response.json())?.countryCode;
   if (typeof country !== 'string' || !/^[A-Za-z]{2}$/.test(country)) throw new Error('TIDAL session has no country');
   return country.toUpperCase();
 }
 
-async function authorize(config, rejected) {
+async function authorize(config) {
+  const expiry = tokenExpiry(config.accessToken);
+  if (expiry !== null && expiry <= Date.now() + 60000) throw configurationError('TIDAL access token is expired');
   const key = JSON.stringify(config);
-  const previous = session?.key === key ? session : null;
-  if (!rejected && previous && previous.expiresAtMs > Date.now() + 60000) return previous;
-  const canRefresh = Boolean(config.refreshToken && config.clientId);
-  let token = null;
-  if (!rejected && config.accessToken && !previous?.refreshed) {
-    const expiry = tokenExpiry(config.accessToken);
-    if (expiry === null || expiry > Date.now() + 60000) {
-      token = {accessToken: config.accessToken, expiresAtMs: expiry ?? Date.now() + 3600000, countryCode: '', refreshed: false};
-    }
-  }
-  if (!token) {
-    if (!canRefresh) throw configurationError('TIDAL access token is expired or was rejected');
-    token = await refresh(config);
-  }
-  let country = config.countryCode || token.countryCode || previous?.countryCode || await accountCountry(token.accessToken);
-  if (!country) {
-    if (token.refreshed || !canRefresh) throw configurationError('TIDAL access token was rejected');
-    token = await refresh(config);
-    country = token.countryCode || await accountCountry(token.accessToken);
-    if (!country) throw configurationError('TIDAL access token was rejected');
-  }
-  session = Object.assign({key}, token, {countryCode: country});
+  if (session?.key === key) return session;
+  const countryCode = config.countryCode || await accountCountry(config.accessToken);
+  session = {key, accessToken: config.accessToken, countryCode};
   return session;
 }
 
 async function api(context, path, params) {
-  const config = credentials(context);
-  let auth = await authorize(config, false);
-  for (let attempt = 0; ; attempt++) {
-    const query = new URLSearchParams(Object.assign({}, params, {countryCode: auth.countryCode}));
-    const url = API + path + '?' + query.toString();
-    const response = await fetch(url, {headers: {Authorization: 'Bearer ' + auth.accessToken, Accept: 'application/json'}});
-    if (response.status === 401) {
-      if (attempt > 0) throw configurationError('TIDAL rejected the session');
-      auth = await authorize(config, true);
-      continue;
-    }
-    if (!response.ok) throw new Error('TIDAL request failed with HTTP ' + response.status);
-    return {url, data: await response.json()};
+  const auth = await authorize(credentials(context));
+  const query = new URLSearchParams(Object.assign({}, params, {countryCode: auth.countryCode}));
+  const url = API + path + '?' + query.toString();
+  const response = await fetch(url, {headers: {Authorization: 'Bearer ' + auth.accessToken, Accept: 'application/json'}});
+  if (response.status === 401) {
+    session = null;
+    throw configurationError('TIDAL rejected the access token');
   }
+  if (!response.ok) throw new Error('TIDAL request failed with HTTP ' + response.status);
+  return {url, data: await response.json()};
 }
 
 function toTrack(item) {

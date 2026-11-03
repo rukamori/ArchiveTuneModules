@@ -8,9 +8,9 @@
     "name": "TIDAL",
     "displayName": "TIDAL",
     "icon": "icon.png",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "author": "morieattonkatsu",
-    "description": "Plays songs from TIDAL with your own TIDAL subscription. Supports FLAC lossless, Hi-Res FLAC through DASH, and AAC. Provide an access token, or a refresh token with its client ID so the module can renew access automatically. Protected (DRM) and encrypted streams are not played, and previews are never returned as full tracks.",
+    "description": "Plays songs from TIDAL with your own TIDAL subscription. Supports FLAC lossless, Hi-Res FLAC through DASH, and AAC. Provide a static access token from your TIDAL account; when it expires, replace it in the module settings. Protected (DRM) and encrypted streams are not played, and previews are never returned as full tracks.",
     "homepage": "https://miuka.moe",
     "repository": "https://github.com/rukamori/ArchiveTuneModules",
     "license": "GPL-3.0",
@@ -22,27 +22,7 @@
       "accessToken": {
         "type": "password",
         "label": "Access token",
-        "description": "OAuth access token for your TIDAL account. Optional when a refresh token and client ID are set.",
-        "defaultValue": null,
-        "secret": true
-      },
-      "refreshToken": {
-        "type": "password",
-        "label": "Refresh token",
-        "description": "OAuth refresh token for your TIDAL account. Used with the client ID to renew expired access tokens.",
-        "defaultValue": null,
-        "secret": true
-      },
-      "clientId": {
-        "type": "text",
-        "label": "Client ID",
-        "description": "Client ID of the application that issued your tokens. Required for automatic renewal.",
-        "defaultValue": null
-      },
-      "clientSecret": {
-        "type": "password",
-        "label": "Client secret",
-        "description": "Only needed when the client that issued your tokens requires a secret for renewal.",
+        "description": "Static OAuth access token for your TIDAL account. Replace it here when it expires.",
         "defaultValue": null,
         "secret": true
       },
