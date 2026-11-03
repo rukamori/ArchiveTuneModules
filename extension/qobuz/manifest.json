@@ -7,6 +7,7 @@
     "id": "moe.rukamori.provider.qobuz",
     "name": "Qobuz",
     "displayName": "Qobuz",
+    "icon": "icon.png",
     "version": "1.0.0",
     "author": "morieattonkatsu",
     "description": "Plays songs from Qobuz with your own Qobuz streaming subscription. Supports FLAC from CD quality up to 24-bit/192 kHz, and MP3 320 kbps. Sign in with a user auth token, or with your email and password. Requests are signed with the app ID and app secret you provide. Previews are never returned as full tracks.",

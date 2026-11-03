@@ -1,0 +1,98 @@
+{
+  "name": "ArchiveTune Modules",
+  "version": 1,
+  "updated_at": "2026-11-03T00:00:00Z",
+  "extensions": [
+    {
+      "id": "moe.rukamori.provider.tidal",
+      "name": "tidal",
+      "display_name": "TIDAL",
+      "version": "1.0.0",
+      "author": "morieattonkatsu",
+      "description": "Plays songs from TIDAL with your own TIDAL subscription. Supports FLAC lossless, Hi-Res FLAC through DASH, and AAC. Provide an access token, or a refresh token with its client ID so the module can renew access automatically. Protected (DRM) and encrypted streams are not played, and previews are never returned as full tracks.",
+      "download_url": "https://raw.githubusercontent.com/rukamori/ArchiveTuneModules/main/dist/tidal.arch",
+      "sha256": "d4679d999ab82983ce36b74831bae94ad5d01a607a8ba339551c477bc23423d4",
+      "icon_url": "https://raw.githubusercontent.com/rukamori/ArchiveTuneModules/main/icon/tidal.png",
+      "category": "download",
+      "tags": [
+        "tidal",
+        "lossless",
+        "hi-res",
+        "flac",
+        "aac",
+        "subscription"
+      ],
+      "labels": [
+        "FLAC",
+        "Hi-Res",
+        "Lossless",
+        "Subscription"
+      ],
+      "capabilities": [
+        "searchTracks",
+        "getTrackStreamUrl"
+      ],
+      "downloads": 0,
+      "updated_at": "2026-11-03T00:00:00Z"
+    },
+    {
+      "id": "moe.rukamori.provider.qobuz",
+      "name": "qobuz",
+      "display_name": "Qobuz",
+      "version": "1.0.0",
+      "author": "morieattonkatsu",
+      "description": "Plays songs from Qobuz with your own Qobuz streaming subscription. Supports FLAC from CD quality up to 24-bit/192 kHz, and MP3 320 kbps. Sign in with a user auth token, or with your email and password. Requests are signed with the app ID and app secret you provide. Previews are never returned as full tracks.",
+      "download_url": "https://raw.githubusercontent.com/rukamori/ArchiveTuneModules/main/dist/qobuz.arch",
+      "sha256": "c33f816fc6e919a264653565f800cf198654ef420b675fa7d3b4e90b58835218",
+      "icon_url": "https://raw.githubusercontent.com/rukamori/ArchiveTuneModules/main/icon/qobuz.png",
+      "category": "download",
+      "tags": [
+        "qobuz",
+        "lossless",
+        "hi-res",
+        "flac",
+        "mp3",
+        "subscription"
+      ],
+      "labels": [
+        "FLAC",
+        "Hi-Res",
+        "Lossless",
+        "Subscription"
+      ],
+      "capabilities": [
+        "searchTracks",
+        "getTrackStreamUrl"
+      ],
+      "downloads": 0,
+      "updated_at": "2026-11-03T00:00:00Z"
+    },
+    {
+      "id": "moe.rukamori.provider.jiosaavn",
+      "name": "jiosaavn",
+      "display_name": "JioSaavn",
+      "version": "1.0.0",
+      "author": "morieattonkatsu",
+      "description": "Plays songs from the JioSaavn catalog using the public JioSaavn web player API. Streams are AAC in MP4, at up to 320 kbps when JioSaavn offers that encoding for the track, otherwise 96 kbps. No account is required. Catalog coverage is strongest for Indian music.",
+      "download_url": "https://raw.githubusercontent.com/rukamori/ArchiveTuneModules/main/dist/jiosaavn.arch",
+      "sha256": "a571e261db838605c3ce91e7b97e128e615b7266ed30bd6ada9fb984bfadf003",
+      "icon_url": "https://raw.githubusercontent.com/rukamori/ArchiveTuneModules/main/icon/jiosaavn.png",
+      "category": "download",
+      "tags": [
+        "jiosaavn",
+        "aac",
+        "free",
+        "indian"
+      ],
+      "labels": [
+        "AAC"
+      ],
+      "capabilities": [
+        "searchTracks",
+        "getTrackStreamUrl"
+      ],
+      "downloads": 0,
+      "updated_at": "2026-11-03T00:00:00Z"
+    }
+  ]
+}

@@ -7,6 +7,7 @@
     "id": "moe.rukamori.provider.jiosaavn",
     "name": "JioSaavn",
     "displayName": "JioSaavn",
+    "icon": "icon.png",
     "version": "1.0.0",
     "author": "morieattonkatsu",
     "description": "Plays songs from the JioSaavn catalog using the public JioSaavn web player API. Streams are AAC in MP4, at up to 320 kbps when JioSaavn offers that encoding for the track, otherwise 96 kbps. No account is required. Catalog coverage is strongest for Indian music.",

@@ -7,6 +7,7 @@
     "id": "moe.rukamori.provider.tidal",
     "name": "TIDAL",
     "displayName": "TIDAL",
+    "icon": "icon.png",
     "version": "1.0.0",
     "author": "morieattonkatsu",
     "description": "Plays songs from TIDAL with your own TIDAL subscription. Supports FLAC lossless, Hi-Res FLAC through DASH, and AAC. Provide an access token, or a refresh token with its client ID so the module can renew access automatically. Protected (DRM) and encrypted streams are not played, and previews are never returned as full tracks.",
